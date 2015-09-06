@@ -1,9 +1,9 @@
 $:.push File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
-require 'visual_studio/gem/version'
+require 'visual_studio/version'
 
 Gem::Specification.new do |s|
   s.name              = 'visual_studio'
-  s.version           = VisualStudio::Gem.version
+  s.version           = VisualStudio.version
   s.platform          = Gem::Platform::RUBY
   s.author            = 'Michael Williams'
   s.email             = 'm.t.williams@live.com'
