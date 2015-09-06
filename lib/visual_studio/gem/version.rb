@@ -1,7 +1,7 @@
 class VisualStudio
   module Gem
     module VERSION #:nodoc:
-      MAJOR, MINOR, PATCH, PRE = [0, 0, 0, 0]
+      MAJOR, MINOR, PATCH, PRE = [0, 0, 0, 1]
       STRING = [MAJOR, MINOR, PATCH, PRE].compact.join('.')
     end
 
