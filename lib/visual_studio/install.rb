@@ -2,14 +2,14 @@ module VisualStudio
   class Install
     attr_reader :name
     attr_reader :version
-    attr_reader :install
+    attr_reader :root
     attr_reader :toolsets
     attr_reader :sdks
 
     def initialize(opts={})
       @name = opts[:name]
       @version = opts[:version]
-      @install = opts[:install]
+      @root = opts[:root]
       @toolsets = opts[:toolsets]
       @sdks = opts[:sdks]
     end
@@ -42,7 +42,7 @@ module VisualStudio
       # TODO(mtwilliams): Cache.
       VisualStudio::Install.new(name: VERSION_TO_NAME[version],
                                 version: version,
-                                install: install,
+                                root: install,
                                 toolsets: Hashie::Mash.new({
                                   c: c_and_cpp,
                                   cpp: c_and_cpp,
