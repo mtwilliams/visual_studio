@@ -11,9 +11,9 @@ Documentation is on the back-burner, so for now:
 
 ```ruby
 VisualStudio.available? # true
-vs = VisualStudio.find :vs2015
-vs.name.pretty # "Visual Studio 2015"
-vs.name # "vs2015"
-vs.version # "14.0"
-vs.install # "C:/Program Files (x86)/Microsoft Visual Studio 14.0/"
+install = VisualStudio.find 'vs2015'
+install.name.pretty # "Visual Studio 2015"
+install.name # "vs2015"
+install.version # "14.0"
+install.root # "C:/Program Files (x86)/Microsoft Visual Studio 14.0/"
 ```
