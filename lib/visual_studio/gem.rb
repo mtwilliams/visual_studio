@@ -1,6 +1,6 @@
 require 'ostruct'
 
-class VisualStudio
+module VisualStudio
   module Gem
     # The name of this Gem.
     def self.name
