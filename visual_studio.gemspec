@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage          = VisualStudio::Gem.homepage
   s.summary           = VisualStudio::Gem.summary
   s.description       = VisualStudio::Gem.description
-  s.license           = VisualStudio::Gem.library
+  s.license           = VisualStudio::Gem.license
 
   s.required_ruby_version = '>= 2.0.0'
 

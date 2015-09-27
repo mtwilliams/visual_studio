@@ -47,7 +47,7 @@ module VisualStudio
 
     # The semantic version of the this Gem.
     def self.version
-      VisualStudio::VERSION::STRING
+      Gem::VERSION::STRING
     end
 
     # The license covering this Gem.
