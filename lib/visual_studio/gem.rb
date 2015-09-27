@@ -41,7 +41,7 @@ module VisualStudio
     end
 
     module VERSION #:nodoc:
-      MAJOR, MINOR, PATCH, PRE = [0, 0, 0, 4]
+      MAJOR, MINOR, PATCH, PRE = [0, 0, 0, 5]
       STRING = [MAJOR, MINOR, PATCH, PRE].compact.join('.')
     end
 

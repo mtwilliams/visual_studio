@@ -28,6 +28,8 @@ module VisualStudio
   require 'visual_studio/install'
   require 'visual_studio/product'
 
+  require 'visual_studio/sdks/windows'
+
   def self.available?(name_or_version=nil)
     self.installed?(name_or_version)
   end

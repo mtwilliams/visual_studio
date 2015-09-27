@@ -66,8 +66,9 @@ module VisualStudio
             end
 
         # TODO(mtwilliams): Handle the Xbox One and PS4.
-        # TODO(mtwilliams): Actually search for the SDKs.
-        sdks = VisualStudio::VERSION_TO_SDKS[version][:windows]
+        sdks = (VisualStudio::VERSION_TO_SDKS[version][:windows].map do |version|
+                  Windows::SoftwareDevelopmentKit.find(version)
+                end).compact
 
         platforms = [:windows]
         architectures = case product
