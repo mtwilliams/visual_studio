@@ -24,9 +24,37 @@ module VisualStudio
       @supports  = desc[:supports]
     end
 
+    def environment(opts={})
+      # TODO(mtwilliams): Raise an exception.
+      return nil unless @name.to_s == 'VC'
+
+      # HACK(mtwilliams): We should reimplement this logic inside this gem.
+      require 'open3'
+      require 'json'
+
+      target = opts[:target] || {platform: :windows,
+                                 architecture: :x86}
+      # TODO(mtwilliams): Handle other platforms.
+      platform = :windows
+      arch = {:x86 => 'x86', :x86_64 => 'amd64', :arm => 'arm'}[target[:architecture]]
+      # TODO(mtwilliams): Check if the architecture is supported.
+       # @supports.include?(target[:architecture])
+
+      delim = "d33b66512b1a01e9e3ee46e5f96a8036"
+      cmd   = "call \"#{File.join(@root, 'vcvarsall.bat')}\" #{arch} & " +
+              "echo puts '#{delim}'; require('json'); print JSON.generate(ENV.to_h); | ruby\n"
+      out, _, status = Open3.capture3(opts[:base] || ENV.to_h, "cmd.exe /C \"#{cmd}\"")
+      return nil unless status == 0
+
+      env = JSON.parse(out.split(delim)[1])
+      env = VisualStudio::Environment.merge(env, opts[:overlay] || {})
+
+      env
+    end
+
     def self.find(product, version)
       if VisualStudio::Product::NAMES.include?(product)
-        name = Helpers::PrettyString.new VisualStudio::VERSION_TO_NAME[version],
+        name = Helpers::PrettyString.new product,
                                          pretty: VisualStudio::VERSION_TO_PRETTY_NAME[version]
 
         root = self._find_via_registry(product, version)
