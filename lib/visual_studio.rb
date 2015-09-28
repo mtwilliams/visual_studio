@@ -27,6 +27,7 @@ module VisualStudio
 
   require 'visual_studio/install'
   require 'visual_studio/product'
+  require 'visual_studio/environment'
 
   require 'visual_studio/sdks/windows'
 
