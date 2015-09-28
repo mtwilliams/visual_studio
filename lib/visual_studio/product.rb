@@ -40,13 +40,12 @@ module VisualStudio
       # TODO(mtwilliams): Check if the architecture is supported.
        # @supports.include?(target[:architecture])
 
-      delim = "d33b66512b1a01e9e3ee46e5f96a8036"
       cmd   = "call \"#{File.join(@root, 'vcvarsall.bat')}\" #{arch} & " +
-              "echo puts '#{delim}'; require('json'); print JSON.generate(ENV.to_h); | ruby\n"
-      out, _, status = Open3.capture3(opts[:base] || ENV.to_h, "cmd.exe /C \"#{cmd}\"")
+              "echo require('json'); print JSON.generate(ENV.to_h); | ruby\n"
+      out, _, status = Open3.capture3(ENV.to_h, "cmd.exe /C \"#{cmd}\"")
       return nil unless status == 0
 
-      env = JSON.parse(out.split(delim)[1])
+      env = VisualStudio::Environment.merge(opts[:base] || {}, JSON.parse(out))
       env = VisualStudio::Environment.merge(env, opts[:overlay] || {})
 
       env
