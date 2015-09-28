@@ -25,7 +25,7 @@ module VisualStudio
 
           path.join(';')
         else
-          # Default to the overlay, or right-hand side.
+          # Right-hand side takes precedence.
           overlay
         end
       end
