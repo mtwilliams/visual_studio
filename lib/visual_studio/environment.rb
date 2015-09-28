@@ -12,7 +12,7 @@ module VisualStudio
           base    = base.split(';')
           overlay = overlay.split(';')
 
-          cwd = base.include?('.') || overlay.include?('.')
+          should_include_cwd = base.include?('.') || overlay.include?('.')
 
           # HACK(mtwilliams): We're using File.expand_path here to "normalize"
           # paths to prevent duplicates, but this could very likely have
@@ -21,7 +21,7 @@ module VisualStudio
           overlay = overlay.reject{|p| p=='.'}.map{|p| File.expand_path(p)}
 
           path = base | overlay
-          path = ['.'] + path if cwd
+          path = ['.'] + path if should_include_cwd
 
           path.join(';')
         else
