@@ -65,22 +65,22 @@ module VisualStudio
               case version.to_f
                 when 8.0..11.0
                   # TODO(mtwilliams): Check if x86_64 support exists.
-                  includes  = [File.join(root, 'VC', 'include')]
-                  libraries = {:x86    => [File.join(root, 'VC', 'lib')],
+                  includes  = [File.join(root, 'include')]
+                  libraries = {:x86    => [File.join(root, 'lib')],
                                :x86_64 => []}
-                  binaries  = {:x86    => [File.join(root, 'VC', 'bin')],
+                  binaries  = {:x86    => [File.join(root, 'bin')],
                                :x86_64 => []}
                   [includes, libraries, binaries]
                 when 12.0..14.0
                   # TODO(mtwilliams): Select the 64-bit and ARM host variants
                   # when applicable, i.e. when running on 64-bit or ARM.
-                  includes  = [File.join(root, 'VC', 'include')]
-                  libraries = {:x86    => [File.join(root, 'VC', 'lib')],
-                               :x86_64 => [File.join(root, 'VC', 'lib', 'amd64')],
-                               :arm    => [File.join(root, 'VC', 'lib', 'arm')]}
-                  binaries  = {:x86    => [File.join(root, 'VC', 'bin')],
-                               :x86_64 => [File.join(root, 'VC', 'bin', 'x86_amd64')],
-                               :arm    => [File.join(root, 'VC', 'bin', 'x86_arm')]}
+                  includes  = [File.join(root, 'include')]
+                  libraries = {:x86    => [File.join(root, 'lib')],
+                               :x86_64 => [File.join(root, 'lib', 'amd64')],
+                               :arm    => [File.join(root, 'lib', 'arm')]}
+                  binaries  = {:x86    => [File.join(root, 'bin')],
+                               :x86_64 => [File.join(root, 'bin', 'x86_amd64')],
+                               :arm    => [File.join(root, 'bin', 'x86_arm')]}
                   [includes, libraries, binaries]
                 else
                   # TODO(mtwilliams): Raise a proper extension.
