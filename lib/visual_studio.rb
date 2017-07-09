@@ -1,9 +1,12 @@
 module VisualStudio
   NAMES        = ['vs2015', 'vs2013', 'vs2012', 'vs2010', 'vs2008', 'vs2005']
 
-  PRETTY_NAMES = ['Visual Studio 2015', 'Visual Studio 2013',
-                  'Visual Studio 2012', 'Visual Studio 2010',
-                  'Visual Studio 2008', 'Visual Studio 2005']
+  PRETTY_NAMES = ['Visual Studio 2015',
+                  'Visual Studio 2013',
+                  'Visual Studio 2012',
+                  'Visual Studio 2010',
+                  'Visual Studio 2008',
+                  'Visual Studio 2005']
 
   VERSIONS     = [14.0, 12.0, 11.0, 10.0, 9.0, 8.0].map(&:to_s)
 
