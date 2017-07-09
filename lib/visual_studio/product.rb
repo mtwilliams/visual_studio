@@ -179,22 +179,27 @@ module VisualStudio
 
     private
       def self._find_via_registry(product, version)
-        # We try to find a full version of Visual Studio. If we can't, then
-        # we look for standalone verions, i.e. Express Editions. This is only
-        # required for 2005-2010 so this logic can be removed when we drop
-        # support for them.
-        keys = ["SOFTWARE\\Wow6432Node\\Microsoft\\VisualStudio\\#{version}\\Setup\\#{product}",
-                "SOFTWARE\\Microsoft\\VisualStudio\\#{version}\\Setup\\#{product}",
-                "SOFTWARE\\Wow6432Node\\Microsoft\\VCExpress\\#{version}\\Setup\\#{product}",
-                "SOFTWARE\\Microsoft\\VCExpress\\#{version}\\Setup\\#{product}"]
-        installs = keys.map do |key|
-          begin
-            require 'win32/registry'
-            return File.expand_path(::Win32::Registry::HKEY_LOCAL_MACHINE.open(key, ::Win32::Registry::KEY_READ)['ProductDir']).to_s
-          rescue
-          end
-        end
-        installs.compact.first
+        case version.to_f
+          when 8.0..14.0
+            # We try to find a full version of Visual Studio. If we can't, then
+            # we look for standalone verions, i.e. Express Editions. This is only
+            # required for 2005-2010 so this logic can be removed when we drop
+            # support for them.
+            keys = ["SOFTWARE\\Wow6432Node\\Microsoft\\VisualStudio\\#{version}\\Setup\\#{product}",
+                    "SOFTWARE\\Microsoft\\VisualStudio\\#{version}\\Setup\\#{product}",
+                    "SOFTWARE\\Wow6432Node\\Microsoft\\VCExpress\\#{version}\\Setup\\#{product}",
+                    "SOFTWARE\\Microsoft\\VCExpress\\#{version}\\Setup\\#{product}"]
+            installs = keys.map do |key|
+              begin
+                require 'win32/registry'
+                return File.expand_path(::Win32::Registry::HKEY_LOCAL_MACHINE.open(key, ::Win32::Registry::KEY_READ)['ProductDir']).to_s
+              rescue
+              end
+            end
+            installs.compact.first
+          when 15.0
+            raise "Not supported yet!"
+          end        
       end
   end
 end
