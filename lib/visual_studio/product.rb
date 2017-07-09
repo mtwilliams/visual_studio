@@ -11,7 +11,8 @@ module VisualStudio
                 :libraries,
                 :binaries,
                 :sdks,
-                :supports
+                :supports,
+                :shared
 
     def initialize(desc)
       @name      = desc[:name]
@@ -22,33 +23,77 @@ module VisualStudio
       @binaries  = desc[:binaries]
       @sdks      = desc[:sdks]
       @supports  = desc[:supports]
+      @shared    = desc[:shared]
     end
 
     def environment(opts={})
       # TODO(mtwilliams): Raise an exception.
       return nil unless @name.to_s == 'VC'
 
-      # HACK(mtwilliams): We should reimplement this logic inside this gem.
-      require 'open3'
-      require 'json'
-
       target = opts[:target] || {platform: :windows,
                                  architecture: :x86}
+
       # TODO(mtwilliams): Handle other platforms.
+      # TODO(mtwilliams): Check if the architecture is supported.
       platform = :windows
       arch = {:x86 => 'x86', :x86_64 => 'amd64', :arm => 'arm'}[target[:architecture]]
-      # TODO(mtwilliams): Check if the architecture is supported.
-       # @supports.include?(target[:architecture])
 
-      cmd   = "call \"#{File.join(@root, 'vcvarsall.bat')}\" #{arch} & " +
-              "echo require('json'); print JSON.generate(ENV.to_h); | ruby\n"
-      out, _, status = Open3.capture3(ENV.to_h, "cmd.exe /C \"#{cmd}\"")
-      return nil unless status == 0
+      # TODO(mtwilliams): Raise an exception.
+      return nil unless arch
 
-      env = VisualStudio::Environment.merge(opts[:base] || {}, JSON.parse(out))
-      env = VisualStudio::Environment.merge(env, opts[:overlay] || {})
+      if @shared
+        # HACK(mtwilliams): Microsoft shipped a broken `vcvarsall.bat`, so
+        # we need to build the envrionment ourself.
 
-      env
+        root = File.expand_path(File.join(@root, ".."))
+
+        # TODO(mtwilliams): Insert missing variables into environment.
+         # WindowsSdkDir
+         # WindowsLibPath
+         # WindowsSDKVersion
+         # UCRTVersion
+         # UniversalCRTSdkDir
+         # DevEnvDir
+         # INCLUDE
+         # LIB
+         # LIBPATH
+
+        path = []
+
+        # TODO(mtwilliams): Inject latest Windows SDK into PATH.
+        case arch
+          when 'x86'
+            path << File.join(root, "bin")
+          else
+            path << File.join(root, "bin", arch)
+          end
+
+        env = {
+          "VS140COMNTOOLS" => File.join(root, "Common7", "Tools"),
+          "VSINSTALLDIR"   => root,
+          "VCINSTALLDIR"   => File.join(root, "VC"),
+          "PATH"           => path.join(';')
+        }
+
+        env = VisualStudio::Environment.merge(opts[:base] || {}, env)
+        env = VisualStudio::Environment.merge(env, opts[:overlay] || {})
+
+        env
+      else
+        # HACK(mtwilliams): We should reimplement this logic inside this gem.
+        require 'open3'
+        require 'json'
+
+        cmd   = "call \"#{File.join(@root, 'vcvarsall.bat')}\" #{arch} & " +
+                "echo require('json'); print JSON.generate(ENV.to_h); | ruby\n"
+        out, _, status = Open3.capture3(ENV.to_h, "cmd.exe /C \"#{cmd}\"")
+        return nil unless status == 0
+
+        env = VisualStudio::Environment.merge(opts[:base] || {}, JSON.parse(out))
+        env = VisualStudio::Environment.merge(env, opts[:overlay] || {})
+
+        env
+      end
     end
 
     def self.find(product, version)
@@ -58,6 +103,10 @@ module VisualStudio
 
         root = self._find_via_registry(product, version)
         return nil if root.nil?
+
+        # If shared, indicates everything is fucked up and Microsoft can't be
+        # trusted. As such, we need to unfuck things downstream.
+        shared = root.downcase.include? 'shared'
 
         includes, libraries, binaries =
           case product
@@ -120,7 +169,8 @@ module VisualStudio
                                   binaries: binaries,
                                   sdks: ({windows: sdks}),
                                   supports: ({platforms: platforms,
-                                              architectures: architectures}))
+                                              architectures: architectures}),
+                                  shared: shared)
       else
         # TODO(mtwilliams): Raise an exception.
         # raise VisualStudio::InvalidVersion.new(...)
