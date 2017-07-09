@@ -63,9 +63,9 @@ module VisualStudio
         # TODO(mtwilliams): Inject latest Windows SDK into PATH.
         case arch
           when 'x86'
-            path << File.join(root, "bin")
+            path << File.join(@root, "bin")
           else
-            path << File.join(root, "bin", arch)
+            path << File.join(@root, "bin", arch)
           end
 
         env = {
